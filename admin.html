@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Admin — DuoRifa</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+
+<!-- ===================== PANTALLA DE LOGIN ===================== -->
+<section id="loginScreen" class="admin-login">
+  <div class="admin-login-card">
+    <p class="admin-brand">DuoRifa</p>
+    <h1>Panel del administrador</h1>
+    <p class="admin-sub">Inicia sesión para revisar y verificar los pagos de los boletos.</p>
+
+    <form id="loginForm" class="admin-form">
+      <label for="loginEmail">Correo</label>
+      <input type="email" id="loginEmail" required autocomplete="username" placeholder="tucorreo@ejemplo.com">
+
+      <label for="loginPassword">Contraseña</label>
+      <input type="password" id="loginPassword" required autocomplete="current-password" placeholder="••••••••">
+
+      <p id="loginError" class="admin-error" hidden></p>
+
+      <button type="submit" id="loginBtn" class="btn btn-primary admin-full">Entrar</button>
+    </form>
+  </div>
+</section>
+
+<!-- ===================== PANEL PRINCIPAL ===================== -->
+<section id="panelScreen" class="admin-panel" hidden>
+  <header class="admin-topbar">
+    <p class="admin-brand">DuoRifasRD · Admin</p>
+    <div class="admin-topbar-right">
+      <span id="userEmail" class="admin-user"></span>
+      <button id="logoutBtn" class="btn btn-ghost">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <div class="container admin-content">
+
+    <div class="admin-stats">
+      <div class="admin-stat-card">
+        <span class="admin-stat-value" id="statPending">0</span>
+        <span class="admin-stat-label">Pendientes</span>
+      </div>
+      <div class="admin-stat-card">
+        <span class="admin-stat-value" id="statVerified">0</span>
+        <span class="admin-stat-label">Verificados</span>
+      </div>
+      <div class="admin-stat-card">
+        <span class="admin-stat-value" id="statTickets">0</span>
+        <span class="admin-stat-label">Boletos vendidos</span>
+      </div>
+    </div>
+
+    <!-- ============ BUSCAR GANADOR ============ -->
+    <div class="winner-search">
+      <h2 class="winner-search-title">🏆 Buscar ganador</h2>
+      <div class="winner-search-row">
+        <input type="text" id="winnerNumberInput" inputmode="numeric" maxlength="5" placeholder="Ej. 00123">
+        <button type="button" id="winnerSearchBtn" class="btn btn-primary">Buscar</button>
+      </div>
+      <div id="winnerResult" class="winner-result" hidden></div>
+    </div>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-filter="pendiente">Pendientes</button>
+      <button class="admin-tab" data-filter="verificado">Verificados</button>
+      <button class="admin-tab" data-filter="todos">Todos</button>
+    </div>
+
+    <div id="ticketsList" class="admin-tickets">
+      <p class="admin-empty">Cargando compras...</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===================== MODAL: VER COMPROBANTE ===================== -->
+<div id="proofModal" class="admin-modal" hidden>
+  <div class="admin-modal-backdrop" id="proofModalClose"></div>
+  <div class="admin-modal-content">
+    <button class="admin-modal-close" id="proofModalCloseBtn" aria-label="Cerrar">&times;</button>
+    <img id="proofModalImg" src="" alt="Comprobante de pago">
+  </div>
+</div>
+
+<script type="module" src="admin.js"></script>
+</body>
+</html>

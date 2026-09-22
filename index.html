@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>DuoRifa </title>
+<meta name="description" content="Compra tus boletos para la DuoRifa y participa por un Kia 2020 o un Kia 2019. Boletos desde RD$50.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ BOTONES FLOTANTES ============ -->
+<div class="floating-buttons" aria-label="Contacto rápido">
+  <a class="float-btn float-whatsapp" href="https://wa.me/18295639146" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+    <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.79.47 3.47 1.29 4.93L2 22l5.29-1.39a9.9 9.9 0 0 0 4.75 1.21h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2zm5.8 14.13c-.24.68-1.4 1.3-1.93 1.38-.49.08-1.11.11-1.79-.11-.41-.13-.94-.3-1.62-.59-2.85-1.23-4.71-4.1-4.85-4.29-.14-.19-1.16-1.54-1.16-2.94s.73-2.09.99-2.38c.26-.29.56-.36.75-.36l.54.01c.17.01.4-.06.63.48.24.56.81 1.96.88 2.1.07.14.11.31.02.5-.09.19-.14.31-.28.47-.14.16-.29.36-.42.49-.14.14-.28.29-.12.57.16.28.72 1.19 1.55 1.93 1.06.95 1.96 1.24 2.24 1.38.28.14.45.12.61-.07.17-.19.71-.83.9-1.12.19-.28.38-.24.63-.14.26.09 1.65.78 1.93.92.28.14.47.21.54.33.07.12.07.68-.17 1.36z"/></svg>
+  </a>
+  <a class="float-btn float-instagram" href="https://www.instagram.com/_duorifasrd" target="_blank" rel="noopener" aria-label="Ver Instagram">
+    <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M12 2c2.72 0 3.06.01 4.12.06 1.06.05 1.79.22 2.43.47.66.26 1.22.6 1.77 1.15.55.55.9 1.11 1.15 1.77.25.64.42 1.37.47 2.43.05 1.06.06 1.4.06 4.12s-.01 3.06-.06 4.12c-.05 1.06-.22 1.79-.47 2.43a4.9 4.9 0 0 1-1.15 1.77 4.9 4.9 0 0 1-1.77 1.15c-.64.25-1.37.42-2.43.47-1.06.05-1.4.06-4.12.06s-3.06-.01-4.12-.06c-1.06-.05-1.79-.22-2.43-.47a4.9 4.9 0 0 1-1.77-1.15 4.9 4.9 0 0 1-1.15-1.77c-.25-.64-.42-1.37-.47-2.43C2.01 15.06 2 14.72 2 12s.01-3.06.06-4.12c.05-1.06.22-1.79.47-2.43.26-.66.6-1.22 1.15-1.77A4.9 4.9 0 0 1 5.45.53C6.09.28 6.82.11 7.88.06 8.94.01 9.28 0 12 0zm0 5.35a6.65 6.65 0 1 0 0 13.3 6.65 6.65 0 0 0 0-13.3zm0 10.97a4.32 4.32 0 1 1 0-8.64 4.32 4.32 0 0 1 0 8.64zm6.9-11.23a1.55 1.55 0 1 1-3.1 0 1.55 1.55 0 0 1 3.1 0z"/></svg>
+  </a>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="#inicio" class="logo">
+      <img src="logorifa.png" alt="" class="logo-icon" aria-hidden="true">
+      <span class="logo-text">Duo<span>RifasRD</span></span>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <a href="#premios">Premios</a>
+      <a href="#" id="navBuyBtn">Comprar boletos</a>
+      <a href="#verificar">Verificar boleto</a>
+      <a href="#pago">Métodos de pago</a>
+      <a href="#faq">Preguntas</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menú" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="inicio">
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <div class="hero-logo">
+          <img id="heroLogoImg" src="logorifa.png" alt="DuoRifas RD" class="hero-logo-img">
+        </div>
+        <h1>Dos Kia esperan por su nuevo dueño.</h1>
+        <p class="hero-sub">Un Kia 2020 de primer premio y un Kia 2019 de segundo premio. Boletos desde <strong>RD$50</strong>, con números de la suerte que se generan al instante.</p>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card">
+          <img id="heroCarImg" src="coches.jpg" alt="Kia 2020 y Kia 2019, los dos premios de la rifa" class="hero-car-img">
+          <div class="hero-card-label">1er premio · Kia 2020 — 2do premio · Kia 2019</div>
+        </div>
+      </div>
+      <div class="hero-actions">
+        <a href="#" id="heroBuyBtn" class="btn btn-primary btn-neon">Comprar boletos</a>
+        <a href="#verificar" class="btn btn-ghost">Ya compré, ver mis boletos</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROGRESO DE LA RIFA ============ -->
+  <section class="progress-section">
+    <div class="container">
+      <div class="progress-card">
+        <div class="progress-head">
+          <div>
+            <h2>Progreso</h2>
+          </div>
+          <div class="progress-percent" id="progressPercent">0%</div>
+        </div>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <p class="progress-note" id="drawDateNote" hidden>
+          🎉 ¡Ya vendimos el 80%! El sorteo se realizará el <strong id="drawDateText">POR DEFINIR</strong>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PREMIOS ============ -->
+  <section class="prizes" id="premios">
+    <div class="container">
+      <h2 class="section-title">Los premios</h2>
+      <div class="prize-single">
+        <img src="1.jpg" alt="Kia 2020 y Kia 2019, los dos premios de la rifa" class="prize-single-img">
+        <div class="prize-single-body">
+          <div class="prize-single-badges">
+            <span class="prize-badge">1er premio · Kia 2020</span>
+            <span class="prize-badge prize-badge-second">2do premio · Kia 2019</span>
+          </div>
+          <p>Un Kia 2020 full equipo como primer premio y un Kia 2019 en excelentes condiciones como segundo premio. Ambos listos para entregar al ganador.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+   <!-- ============ GALERÍA DE VEHÍCULOS ============ -->
+  <section class="vehicle-gallery" id="galeria">
+    <div class="container">
+      <h2 class="section-title">Los vehículos</h2>
+    </div>
+    <div class="gallery-track-wrapper">
+      <div class="gallery-track" id="galleryTrack">
+        <img src="1.jpg" alt="Vehículo 1" class="gallery-img">
+        <img src="4.jpg" alt="Vehículo 2" class="gallery-img">
+        <img src="5.jpg" alt="Vehículo 3" class="gallery-img">
+        <img src="6.jpg" alt="Vehículo 4" class="gallery-img">
+        <img src="7.jpg" alt="Vehículo 5" class="gallery-img">
+        <img src="8.jpg" alt="Vehículo 6" class="gallery-img">
+        <img src="9.jpg" alt="Vehículo 7" class="gallery-img">
+        <img src="10.jpg" alt="Vehículo 8" class="gallery-img">
+        <img src="11.jpg" alt="Vehículo 9" class="gallery-img">
+        <img src="3.jpg" alt="Vehículo 10" class="gallery-img">
+        <img src="rosa.png" alt="Vehículo 11" class="gallery-img">
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VISOR DE IMAGEN (LIGHTBOX) ============ -->
+  <div class="lightbox" id="lightbox" hidden>
+    <button class="lightbox-close" id="lightboxClose" aria-label="Cerrar">&times;</button>
+    <img src="" alt="" id="lightboxImg" class="lightbox-img">
+  </div>
+
+
+  <!-- ============ CÓMO FUNCIONA ============ -->
+  <section class="how-it-works">
+    <div class="container">
+      <h2 class="section-title">Cómo participar</h2>
+      <ol class="steps">
+        <li><span class="step-num">1</span><div><h3>Elige tu cantidad</h3><p>Entre 5 y 2,000 boletos por compra. El total se calcula al instante.</p></div></li>
+        <li><span class="step-num">2</span><div><h3>Completa tus datos y paga</h3><p>Nombre, teléfono y el método de pago que prefieras.</p></div></li>
+        <li><span class="step-num">3</span><div><h3>Sube tu comprobante</h3><p>Adjunta la foto del pago y confírmalo por WhatsApp.</p></div></li>
+        <li><span class="step-num">4</span><div><h3>Espera la verificación</h3><p>En un máximo de 24 horas activamos tus boletos.</p></div></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ COMPRAR BOLETOS (VENTANA MODAL) ============ -->
+  <div class="modal-overlay" id="buyModal" hidden>
+    <div class="modal-backdrop" id="buyModalBackdrop"></div>
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="buyModalTitle">
+      <button class="modal-close" id="buyModalClose" aria-label="Cerrar">&times;</button>
+
+      <!-- Paso 1: cantidad -->
+      <div class="buy-card" id="stepQuantity">
+        <h3 class="buy-step-title" id="buyModalTitle">1. ¿Cuántos boletos quieres?</h3>
+        <div class="qty-options" id="qtyOptions">
+  <button class="qty-btn" data-qty="5" aria-pressed="false">
+    <span class="qty-btn-left">
+      <span class="qty-btn-num">5</span>
+      <span class="qty-btn-label">boletos</span>
+    </span>
+    <span class="qty-btn-right">
+      <span class="qty-btn-price">RD$250</span>
+      <span class="qty-btn-indicator" aria-hidden="true"></span>
+    </span>
+  </button>
+  <button class="qty-btn" data-qty="10" aria-pressed="false">
+    <span class="qty-btn-left">
+      <span class="qty-btn-num">10</span>
+      <span class="qty-btn-label">boletos</span>
+    </span>
+    <span class="qty-btn-right">
+      <span class="qty-btn-price">RD$500</span>
+      <span class="qty-btn-indicator" aria-hidden="true"></span>
+    </span>
+  </button>
+  <button class="qty-btn" data-qty="20" aria-pressed="false">
+    <span class="qty-btn-left">
+      <span class="qty-btn-num">20</span>
+      <span class="qty-btn-label">boletos</span>
+    </span>
+    <span class="qty-btn-right">
+      <span class="qty-btn-price">RD$1,000</span>
+      <span class="qty-btn-indicator" aria-hidden="true"></span>
+    </span>
+  </button>
+  <button class="qty-btn" data-qty="30" aria-pressed="false">
+    <span class="qty-btn-left">
+      <span class="qty-btn-num">30</span>
+      <span class="qty-btn-label">boletos</span>
+    </span>
+    <span class="qty-btn-right">
+      <span class="qty-btn-price">RD$1,500</span>
+      <span class="qty-btn-indicator" aria-hidden="true"></span>
+    </span>
+  </button>
+  <button class="qty-btn" data-qty="50" aria-pressed="false">
+    <span class="qty-btn-left">
+      <span class="qty-btn-num">50</span>
+      <span class="qty-btn-label">boletos</span>
+    </span>
+    <span class="qty-btn-right">
+      <span class="qty-btn-price">RD$2,500</span>
+      <span class="qty-btn-indicator" aria-hidden="true"></span>
+    </span>
+  </button>
+  <button class="qty-btn" data-qty="100" aria-pressed="false">
+    <span class="qty-btn-left">
+      <span class="qty-btn-num">100</span>
+      <span class="qty-btn-label">boletos</span>
+    </span>
+    <span class="qty-btn-right">
+      <span class="qty-btn-price">RD$5,000</span>
+      <span class="qty-btn-indicator" aria-hidden="true"></span>
+    </span>
+  </button>
+</div>
+        <div class="qty-custom">
+          <label for="qtyCustom">O escribe una cantidad (mínimo 5):</label>
+          <input type="number" id="qtyCustom" min="5" max="2000" step="1" placeholder="Ej. 15">
+        </div>
+        <div class="qty-summary">
+          <div>
+            <span class="qty-summary-label">Boletos seleccionados</span>
+            <span class="qty-summary-value" id="selectedQty">0</span>
+          </div>
+          <div>
+            <span class="qty-summary-label">Total a transferir</span>
+            <span class="qty-summary-value" id="totalAmount">RD$0</span>
+          </div>
+        </div>
+        <button class="btn btn-primary btn-block" id="goToFormBtn" disabled>Continuar</button>
+      </div>
+
+      <!-- Paso 2: formulario + pago -->
+      <div class="buy-card" id="stepForm" hidden>
+        <h3 class="buy-step-title">2. Tus datos y el pago</h3>
+                <form id="purchaseForm" novalidate>
+          <p class="form-error" id="purchaseFormError" hidden></p>
+
+          <div class="form-row">
+            <label for="fullName">Nombre completo</label>
+            <input type="text" id="fullName" name="fullName" required placeholder="Ej. Juana Pérez">
+            <p class="field-error" id="fullNameError" hidden>Escribe tu nombre completo.</p>
+          </div>
+          <div class="form-row">
+            <label for="phone">Número de teléfono</label>
+            <input type="tel" id="phone" name="phone" required placeholder="Ej. 8091234567">
+            <p class="field-error" id="phoneError" hidden>Escribe un número de teléfono válido (mínimo 10 dígitos).</p>
+          </div>
+
+          <div class="form-row">
+            <label>Método de pago</label>
+            <div class="payment-methods" id="paymentMethods">
+<button type="button" class="pm-btn" data-method="popular">
+  <span class="pay-icon"><img src="popular.jpg" alt="Banco Popular"></span>
+  <span>Banco Popular</span>
+</button>
+<button type="button" class="pm-btn" data-method="banreservas">
+  <span class="pay-icon"><img src="banreservas.jpg" alt="BanReservas"></span>
+  <span>BanReservas</span>
+</button>
+<button type="button" class="pm-btn" data-method="bhd">
+  <span class="pay-icon"><img src="bhd.jpg" alt="Banco BHD"></span>
+  <span>Banco BHD</span>
+</button>
+<button type="button" class="pm-btn" data-method="qik">
+  <span class="pay-icon"><img src="qik.jpg" alt="Qik"></span>
+  <span>Qik (banco digital)</span>
+</button>
+<button type="button" class="pm-btn" data-method="paypal">
+  <span class="pay-icon"><img src="paypal.png" alt="PayPal"></span>
+  <span>PayPal</span>
+</button>
+<button type="button" class="pm-btn" data-method="efectivo">
+  <span class="pay-icon"><img src="efectivo.png" alt="Efectivo"></span>
+  <span>Efectivo</span>
+</button>
+            </div>
+            <p class="field-error" id="methodError" hidden>Elige un método de pago.</p>
+          </div>
+
+          <div class="payment-details" id="paymentDetails" hidden>
+            <!-- Se llena dinámicamente vía JS según el método elegido -->
+          </div>
+
+          <div class="form-row">
+            <label for="proofFile">Foto del comprobante de pago</label>
+            <div class="file-input-wrapper">
+              <input type="file" id="proofFile" name="proofFile" accept="image/*" required class="file-input-hidden">
+              <label for="proofFile" class="file-input-btn">Seleccionar archivo</label>
+                            <span class="file-input-name" id="proofFileName">Ningún archivo seleccionado</span>
+            </div>
+            <p class="field-error" id="proofFileError" hidden>Sube la foto de tu comprobante de pago.</p>
+            <img id="proofPreview" class="proof-preview" hidden alt="Vista previa del comprobante">
+          </div>
+
+          <div class="form-row form-summary-row">
+            <span>Boletos: <strong id="confirmQty">0</strong></span>
+            <span>Total: <strong id="confirmTotal">RD$0</strong></span>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="submitPurchaseBtn">Ya realicé el pago</button>
+          <button type="button" class="btn btn-ghost btn-block" id="backToQtyBtn">Volver</button>
+        </form>
+      </div>
+
+      <!-- Paso 3: confirmación -->
+      <div class="buy-card" id="stepConfirm" hidden>
+        <div class="confirm-icon">✅</div>
+        <h3 class="buy-step-title">¡Compra registrada!</h3>
+
+        <div class="ticket-numbers-box">
+          <p class="ticket-numbers-label">
+            Tus números de boleto
+            <span class="verify-status status-pendiente">Pendiente de verificación</span>
+          </p>
+          <div class="ticket-numbers" id="confirmTicketNumbers"></div>
+        </div>
+
+        <p class="confirm-wait">Ya puedes ver tus números arriba. Aparecerán como <strong>"Pendiente"</strong> hasta que verifiquemos tu pago (máximo <strong>24 horas</strong>) — puedes revisar ese estado en cualquier momento en "Verificar boleto" con tu número de teléfono.</p>
+        <a class="btn btn-whatsapp btn-block" id="sendProofWhatsapp" target="_blank" rel="noopener">Confirmar comprobante por WhatsApp</a>
+        <p class="whatsapp-hint">Se abrirá WhatsApp con un mensaje listo — solo adjunta la foto del comprobante que ya subiste y envíala.</p>
+        <button class="btn btn-ghost btn-block" id="newPurchaseBtn">Comprar más boletos</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ VERIFICAR BOLETO ============ -->
+  <section class="verify-section" id="verificar">
+    <div class="container">
+      <h2 class="section-title">Verifica tus boletos</h2>
+      <p class="section-sub">Escribe el número de teléfono con el que compraste para ver tus boletos y su estado.</p>
+            <form id="verifyForm" class="verify-form">
+        <div class="verify-form-field">
+          <input type="tel" id="verifyPhone" placeholder="Ej. 8091234567" required>
+          <p class="field-error" id="verifyPhoneError" hidden>Escribe un número de teléfono válido.</p>
+        </div>
+        <button type="submit" class="btn btn-primary btn-neon">Verificar</button>
+      </form>
+      <div id="verifyResults" class="verify-results" hidden></div>
+    </div>
+  </section>
+
+  <!-- ============ MÉTODOS DE PAGO ============ -->
+  <section class="pay-methods-section" id="pago">
+    <div class="container">
+      <h2 class="section-title">Métodos de pago aceptados</h2>
+      <div class="pay-grid">
+        <div class="pay-item">
+          <span class="pay-icon pay-icon-lg"><img src="popular.jpg" alt="Banco Popular"></span>
+          <p>Banco Popular</p>
+        </div>
+        <div class="pay-item">
+          <span class="pay-icon pay-icon-lg"><img src="banreservas.jpg" alt="BanReservas"></span>
+          <p>BanReservas</p>
+        </div>
+        <div class="pay-item">
+          <span class="pay-icon pay-icon-lg"><img src="bhd.jpg" alt="Banco BHD"></span>
+          <p>Banco BHD</p>
+        </div>
+        <div class="pay-item">
+          <span class="pay-icon pay-icon-lg"><img src="qik.jpg" alt="Qik"></span>
+          <p>Qik</p>
+        </div>
+        <div class="pay-item">
+          <span class="pay-icon pay-icon-lg"><img src="paypal.png" alt="PayPal"></span>
+          <p>PayPal</p>
+        </div>
+        <div class="pay-item">
+          <span class="pay-icon pay-icon-lg"><img src="efectivo.png" alt="Efectivo"></span>
+          <p>Efectivo</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="faq-section" id="faq">
+    <div class="container">
+      <h2 class="section-title">Preguntas frecuentes</h2>
+      <div class="faq-list">
+        <details>
+          <summary>¿Cuánto cuesta cada boleto?</summary>
+          <p>Cada boleto cuesta RD$50. Puedes comprar entre 5 y 2,000 boletos por compra. Si necesitas más, escríbenos por WhatsApp.</p>
+        </details>
+        <details>
+          <summary>¿Cuándo se activan mis boletos?</summary>
+          <p>Después de subir tu comprobante, la verificación toma un máximo de 24 horas.</p>
+        </details>
+        <details>
+          <summary>¿Cómo sé qué números me tocaron?</summary>
+          <p>Apenas completas la compra, la página te muestra tus números al instante, marcados como "Pendiente" hasta que confirmemos tu pago. También puedes consultarlos luego en la sección "Verificar boleto".</p>
+        </details>
+        <details>
+          <summary>¿Cuándo es el sorteo?</summary>
+          <p>La fecha se anuncia aquí mismo en la página apenas alcancemos el 80% de los boletos vendidos.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-logo-box">
+      <img id="footerLogoImg" src="logorifa.png" alt="DuoRifas RD" class="footer-logo-img">
+    </div>
+    <p class="footer-rights">© 2026 DuoRifasRD</p>
+  </div>
+</footer>
+
+<!-- Firebase (necesario para que los boletos y el progreso sean compartidos entre todos los compradores) -->
+<script type="module" src="firebase-config.js"></script>
+<script type="module" src="script.js"></script>
+</body>
+</html>
