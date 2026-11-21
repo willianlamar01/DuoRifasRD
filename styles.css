@@ -6,6 +6,9 @@
    Tipografía: Sora (títulos) + Inter (texto)
    ===================================================================== */
 
+/* Hace que el atributo hidden siempre gane sobre cualquier display del CSS */
+[hidden] { display: none !important; }
+
 :root {
   --gold: #D4AF37;
   --gold-bright: #F1C64C;
@@ -1029,6 +1032,10 @@ body.modal-open { overflow: hidden; }
   color: var(--text);
   font-size: 1rem;
 }
+/* El input va dentro de un div extra: el div llena la fila y el input ocupa todo su ancho */
+.verify-form-field { flex: 1; }
+.verify-form-field input { width: 100%; }
+
 .verify-results {
   max-width: 640px;
   margin: 26px auto 0;
@@ -1341,4 +1348,124 @@ a:focus-visible, button:focus-visible, input:focus-visible {
   color: var(--text-soft);
   margin: 0;
   font-size: 1rem;
+}
+/* ============ MENOS ESPACIO ENTRE SECCIONES ============ */
+.hero { padding: 44px 0 64px; }
+.progress-section { padding: 28px 0 0; }
+.prizes { padding: 40px 0 28px; }
+.vehicle-gallery { padding: 28px 0 40px; }
+.how-it-works { padding: 36px 0 44px; }
+.verify-section { padding: 40px 0; }
+.pay-methods-section { padding: 36px 0 44px; }
+.faq-section { padding: 16px 0 56px; }
+.section-title { margin-bottom: 14px; }
+.section-sub { margin-bottom: 22px; }
+
+/* ============ NÚMEROS BENDECIDOS ============ */
+.blessed { padding: 28px 0 40px; }
+.blessed-prize {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  max-width: 320px;
+  margin: 0 auto 18px;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  background: var(--gold-soft);
+  border: 1.5px solid rgba(212, 175, 55, 0.5);
+  text-align: center;
+}
+.blessed-prize span { font-size: 0.85rem; color: var(--gold); }
+.blessed-prize strong {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  color: var(--gold-bright);
+}
+.blessed-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.blessed-chip {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-align: center;
+  padding: 10px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  border: 1.5px solid rgba(212, 175, 55, 0.45);
+  color: var(--gold-bright);
+  letter-spacing: 0.06em;
+}
+/* Boleto del cliente que es número bendecido */
+.ticket-chip-blessed {
+  background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+  box-shadow: 0 0 10px rgba(241, 198, 76, 0.55);
+}
+
+@media (max-width: 720px) {
+  .blessed-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+}
+@media (max-width: 480px) {
+  .hero { padding: 36px 0 56px; }
+  .blessed-chip { font-size: 0.85rem; padding: 9px 2px; letter-spacing: 0.03em; }
+}
+.blessed .container { text-align: center; }
+.blessed-tag {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: var(--gold-soft);
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  border-radius: 999px;
+  padding: 5px 14px;
+  margin-bottom: 10px;
+}
+.blessed-note {
+  margin: 16px 0 0;
+  font-size: 0.82rem;
+  color: var(--text-soft);
+}
+
+/* ============ MÓVIL: SECCIONES MÁS UNIDAS ============
+   Va al final del archivo a propósito: así gana sobre los paddings
+   de escritorio y sobre los @media anteriores. */
+@media (max-width: 720px) {
+  .container { padding: 0 16px; }
+
+  .hero { padding: 26px 0 44px; }
+  .hero-copy { margin-top: 20px; }
+  .hero-actions { margin-top: 16px; }
+
+  .progress-section { padding: 14px 0 0; margin-top: -34px; }
+  .progress-card { padding: 20px 18px; }
+
+  .prizes { padding: 22px 0 10px; }
+  .blessed { padding: 14px 0 22px; }
+  .vehicle-gallery { padding: 14px 0 22px; }
+  .how-it-works { padding: 22px 0 26px; }
+  .verify-section { padding: 24px 0; }
+  .pay-methods-section { padding: 22px 0 26px; }
+  .faq-section { padding: 8px 0 34px; }
+
+  .section-title { margin-bottom: 8px; }
+  .section-sub { margin-bottom: 14px; }
+  .steps { gap: 14px; }
+  .pay-grid { gap: 10px; }
+  .faq-list { gap: 8px; }
+}
+
+/* ============ NÚMERO BENDECIDO YA ASIGNADO (tachado) ============ */
+.blessed-chip.claimed {
+  text-decoration: line-through;
+  text-decoration-thickness: 2px;
+  text-decoration-color: var(--danger);
+  opacity: 0.5;
+  border-color: rgba(255, 255, 255, 0.15);
 }

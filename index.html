@@ -3,14 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>DuoRifa </title>
-<meta name="description" content="Compra tus boletos para la DuoRifa y participa por un Kia 2020 o un Kia 2019. Boletos desde RD$50.">
+<title>DuoRifasRD</title>
+<meta name="description" content="Compra tus boletos para las DuoRifas y participa por un Kia 2020, un Kia 2019 o 2 iPhone 18 Pro Max. Boletos desde RD$5.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="rifas.css">
 </head>
 <body>
+
+
 
 <!-- ============ BOTONES FLOTANTES ============ -->
 <div class="floating-buttons" aria-label="Contacto rápido">
@@ -30,8 +33,8 @@
       <span class="logo-text">Duo<span>RifasRD</span></span>
     </a>
     <nav class="main-nav" id="mainNav">
-      <a href="#premios">Premios</a>
-      <a href="#" id="navBuyBtn">Comprar boletos</a>
+      <a href="#rifas">Rifas</a>
+      <a href="#rifas" id="navBuyBtn">Comprar boletos</a>
       <a href="#verificar">Verificar boleto</a>
       <a href="#pago">Métodos de pago</a>
       <a href="#faq">Preguntas</a>
@@ -51,56 +54,22 @@
         <div class="hero-logo">
           <img id="heroLogoImg" src="logorifa.png" alt="DuoRifas RD" class="hero-logo-img">
         </div>
-        <h1>Dos Kia esperan por su nuevo dueño.</h1>
-        <p class="hero-sub">Un Kia 2020 de primer premio y un Kia 2019 de segundo premio. Boletos desde <strong>RD$50</strong>, con números de la suerte que se generan al instante.</p>
+        <h1>Dos rifas, premios de verdad.</h1>
+        <p class="hero-sub">Un Kia 2020, un Kia 2019 y 2 iPhone 18 Pro Max, con números bendecidos de RD$5,000. Boletos desde <strong>RD$5</strong>, con números de la suerte que se generan al instante.</p>
       </div>
-      <div class="hero-visual">
-        <div class="hero-card">
-          <img id="heroCarImg" src="coches.jpg" alt="Kia 2020 y Kia 2019, los dos premios de la rifa" class="hero-car-img">
-          <div class="hero-card-label">1er premio · Kia 2020 — 2do premio · Kia 2019</div>
-        </div>
-      </div>
+    
       <div class="hero-actions">
-        <a href="#" id="heroBuyBtn" class="btn btn-primary btn-neon">Comprar boletos</a>
+        <a href="#rifas" id="heroBuyBtn" class="btn btn-primary btn-neon">Comprar boletos</a>
         <a href="#verificar" class="btn btn-ghost">Ya compré, ver mis boletos</a>
       </div>
     </div>
   </section>
 
-  <!-- ============ PROGRESO DE LA RIFA ============ -->
-  <section class="progress-section">
+  <!-- ============ RIFAS (las tarjetas las dibuja script.js desde raffles-config.js) ============ -->
+  <section class="rifas-section" id="rifas">
     <div class="container">
-      <div class="progress-card">
-        <div class="progress-head">
-          <div>
-            <h2>Progreso</h2>
-          </div>
-          <div class="progress-percent" id="progressPercent">0%</div>
-        </div>
-        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressTrack">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <p class="progress-note" id="drawDateNote" hidden>
-          🎉 ¡Ya vendimos el 80%! El sorteo se realizará el <strong id="drawDateText">POR DEFINIR</strong>.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PREMIOS ============ -->
-  <section class="prizes" id="premios">
-    <div class="container">
-      <h2 class="section-title">Los premios</h2>
-      <div class="prize-single">
-        <img src="1.jpg" alt="Kia 2020 y Kia 2019, los dos premios de la rifa" class="prize-single-img">
-        <div class="prize-single-body">
-          <div class="prize-single-badges">
-            <span class="prize-badge">1er premio · Kia 2020</span>
-            <span class="prize-badge prize-badge-second">2do premio · Kia 2019</span>
-          </div>
-          <p>Un Kia 2020 full equipo como primer premio y un Kia 2019 en excelentes condiciones como segundo premio. Ambos listos para entregar al ganador.</p>
-        </div>
-      </div>
+      <h2 class="section-title">Elige tu rifa</h2>
+      <div class="raffle-grid" id="raffleGrid"></div>
     </div>
   </section>
 
@@ -132,13 +101,12 @@
     <img src="" alt="" id="lightboxImg" class="lightbox-img">
   </div>
 
-
   <!-- ============ CÓMO FUNCIONA ============ -->
   <section class="how-it-works">
     <div class="container">
       <h2 class="section-title">Cómo participar</h2>
       <ol class="steps">
-        <li><span class="step-num">1</span><div><h3>Elige tu cantidad</h3><p>Entre 5 y 2,000 boletos por compra. El total se calcula al instante.</p></div></li>
+        <li><span class="step-num">1</span><div><h3>Elige tu rifa y tu cantidad</h3><p>La cantidad mínima depende de la rifa. El total se calcula al instante.</p></div></li>
         <li><span class="step-num">2</span><div><h3>Completa tus datos y paga</h3><p>Nombre, teléfono y el método de pago que prefieras.</p></div></li>
         <li><span class="step-num">3</span><div><h3>Sube tu comprobante</h3><p>Adjunta la foto del pago y confírmalo por WhatsApp.</p></div></li>
         <li><span class="step-num">4</span><div><h3>Espera la verificación</h3><p>En un máximo de 24 horas activamos tus boletos.</p></div></li>
@@ -155,71 +123,11 @@
       <!-- Paso 1: cantidad -->
       <div class="buy-card" id="stepQuantity">
         <h3 class="buy-step-title" id="buyModalTitle">1. ¿Cuántos boletos quieres?</h3>
-        <div class="qty-options" id="qtyOptions">
-  <button class="qty-btn" data-qty="5" aria-pressed="false">
-    <span class="qty-btn-left">
-      <span class="qty-btn-num">5</span>
-      <span class="qty-btn-label">boletos</span>
-    </span>
-    <span class="qty-btn-right">
-      <span class="qty-btn-price">RD$250</span>
-      <span class="qty-btn-indicator" aria-hidden="true"></span>
-    </span>
-  </button>
-  <button class="qty-btn" data-qty="10" aria-pressed="false">
-    <span class="qty-btn-left">
-      <span class="qty-btn-num">10</span>
-      <span class="qty-btn-label">boletos</span>
-    </span>
-    <span class="qty-btn-right">
-      <span class="qty-btn-price">RD$500</span>
-      <span class="qty-btn-indicator" aria-hidden="true"></span>
-    </span>
-  </button>
-  <button class="qty-btn" data-qty="20" aria-pressed="false">
-    <span class="qty-btn-left">
-      <span class="qty-btn-num">20</span>
-      <span class="qty-btn-label">boletos</span>
-    </span>
-    <span class="qty-btn-right">
-      <span class="qty-btn-price">RD$1,000</span>
-      <span class="qty-btn-indicator" aria-hidden="true"></span>
-    </span>
-  </button>
-  <button class="qty-btn" data-qty="30" aria-pressed="false">
-    <span class="qty-btn-left">
-      <span class="qty-btn-num">30</span>
-      <span class="qty-btn-label">boletos</span>
-    </span>
-    <span class="qty-btn-right">
-      <span class="qty-btn-price">RD$1,500</span>
-      <span class="qty-btn-indicator" aria-hidden="true"></span>
-    </span>
-  </button>
-  <button class="qty-btn" data-qty="50" aria-pressed="false">
-    <span class="qty-btn-left">
-      <span class="qty-btn-num">50</span>
-      <span class="qty-btn-label">boletos</span>
-    </span>
-    <span class="qty-btn-right">
-      <span class="qty-btn-price">RD$2,500</span>
-      <span class="qty-btn-indicator" aria-hidden="true"></span>
-    </span>
-  </button>
-  <button class="qty-btn" data-qty="100" aria-pressed="false">
-    <span class="qty-btn-left">
-      <span class="qty-btn-num">100</span>
-      <span class="qty-btn-label">boletos</span>
-    </span>
-    <span class="qty-btn-right">
-      <span class="qty-btn-price">RD$5,000</span>
-      <span class="qty-btn-indicator" aria-hidden="true"></span>
-    </span>
-  </button>
-</div>
+        <p class="section-sub" id="buyRaffleName"></p>
+        <div class="qty-options" id="qtyOptions"></div>
         <div class="qty-custom">
-          <label for="qtyCustom">O escribe una cantidad (mínimo 5):</label>
-          <input type="number" id="qtyCustom" min="5" max="2000" step="1" placeholder="Ej. 15">
+          <label for="qtyCustom">O escribe una cantidad (mínimo <span id="qtyMinLabel">5</span>):</label>
+          <input type="number" id="qtyCustom" min="5" max="2000" step="1" placeholder="Ej. 25">
         </div>
         <div class="qty-summary">
           <div>
@@ -237,7 +145,7 @@
       <!-- Paso 2: formulario + pago -->
       <div class="buy-card" id="stepForm" hidden>
         <h3 class="buy-step-title">2. Tus datos y el pago</h3>
-                <form id="purchaseForm" novalidate>
+        <form id="purchaseForm" novalidate>
           <p class="form-error" id="purchaseFormError" hidden></p>
 
           <div class="form-row">
@@ -291,7 +199,7 @@
             <div class="file-input-wrapper">
               <input type="file" id="proofFile" name="proofFile" accept="image/*" required class="file-input-hidden">
               <label for="proofFile" class="file-input-btn">Seleccionar archivo</label>
-                            <span class="file-input-name" id="proofFileName">Ningún archivo seleccionado</span>
+              <span class="file-input-name" id="proofFileName">Ningún archivo seleccionado</span>
             </div>
             <p class="field-error" id="proofFileError" hidden>Sube la foto de tu comprobante de pago.</p>
             <img id="proofPreview" class="proof-preview" hidden alt="Vista previa del comprobante">
@@ -333,8 +241,8 @@
   <section class="verify-section" id="verificar">
     <div class="container">
       <h2 class="section-title">Verifica tus boletos</h2>
-      <p class="section-sub">Escribe el número de teléfono con el que compraste para ver tus boletos y su estado.</p>
-            <form id="verifyForm" class="verify-form">
+      <p class="section-sub">Escribe el número de teléfono con el que compraste (con o sin +1) para ver tus boletos y su estado.</p>
+      <form id="verifyForm" class="verify-form">
         <div class="verify-form-field">
           <input type="tel" id="verifyPhone" placeholder="Ej. 8091234567" required>
           <p class="field-error" id="verifyPhoneError" hidden>Escribe un número de teléfono válido.</p>
@@ -378,26 +286,29 @@
     </div>
   </section>
 
-  <!-- ============ FAQ ============ -->
   <section class="faq-section" id="faq">
     <div class="container">
       <h2 class="section-title">Preguntas frecuentes</h2>
       <div class="faq-list">
         <details>
           <summary>¿Cuánto cuesta cada boleto?</summary>
-          <p>Cada boleto cuesta RD$50. Puedes comprar entre 5 y 2,000 boletos por compra. Si necesitas más, escríbenos por WhatsApp.</p>
+          <p>En la rifa de los Kia, cada boleto cuesta RD$50 (mínimo 5 boletos). En la rifa de los iPhone, cada boleto cuesta RD$5 (mínimo 20 boletos). En ambas puedes comprar hasta 2,000 boletos por compra.</p>
         </details>
         <details>
           <summary>¿Cuándo se activan mis boletos?</summary>
-          <p>Después de subir tu comprobante, la verificación toma un máximo de 24 horas.</p>
+          <p>Verificamos tu pago y activamos tus boletos en un máximo de 24 horas. Mientras tanto aparecen como "Pendiente", y solo participan en la rifa los boletos verificados.</p>
         </details>
         <details>
           <summary>¿Cómo sé qué números me tocaron?</summary>
-          <p>Apenas completas la compra, la página te muestra tus números al instante, marcados como "Pendiente" hasta que confirmemos tu pago. También puedes consultarlos luego en la sección "Verificar boleto".</p>
+          <p>Tus números se generan al instante y los ves apenas termina tu compra. También puedes consultarlos cuando quieras en "Verificar boleto" con el número de teléfono que usaste al comprar.</p>
         </details>
         <details>
           <summary>¿Cuándo es el sorteo?</summary>
-          <p>La fecha se anuncia aquí mismo en la página apenas alcancemos el 80% de los boletos vendidos.</p>
+          <p>La fecha del sorteo de cada rifa se anunciará en esta página y en nuestro Instagram @_duorifasrd cuando se complete el 80% de sus boletos.</p>
+        </details>
+        <details>
+          <summary>¿Qué son los números bendecidos?</summary>
+          <p>Cada rifa tiene los suyos: 20 en la de los Kia y 5 en la de los iPhone, de RD$5,000 cada uno. Si uno de tus boletos es uno de ellos, ganas ese premio. Los verás marcados con 🍀 cuando consultes tus boletos.</p>
         </details>
       </div>
     </div>
