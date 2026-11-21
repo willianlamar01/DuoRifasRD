@@ -1,5 +1,6 @@
 // =====================================================================
 // DuoRifa — Panel Admin (varias rifas; ver raffles-config.js)
+// Las compras se cargan por páginas para no gastar lecturas de Firebase.
 // =====================================================================
 import { db, auth } from "./firebase-config.js";
 import {
@@ -7,15 +8,14 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
 import {
   collection, onSnapshot, doc, runTransaction, arrayUnion, arrayRemove,
-  query, orderBy, increment
+  query, where, orderBy, limit, startAfter, getDocs, getCountFromServer, increment
 } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 import { RAFFLES, raffleOf } from "./raffles-config.js";
 
+const PAGE = 20; // compras por página
 const formatMoney = (n) => `RD$${(n || 0).toLocaleString("es-DO")}`;
 
 // Escapa TODO texto que viene de la base de datos antes de mostrarlo.
-// Los clientes controlan lo que guardan en Firestore (nombre, teléfono,
-// números, etc.), así que nunca se debe insertar como HTML sin escapar.
 function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>"']/g, (c) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -30,7 +30,6 @@ const safeProofSrc = (v) =>
 const isValidTicketNumber = (n) => typeof n === "string" && /^\d{5}$/.test(n);
 
 // Referencia a un documento de configuración de una rifa
-// (ej.: rdoc(RAFFLES.iphone, "stats") -> raffle/stats_iphone)
 const rdoc = (r, key) => doc(db, "raffle", r.docs[key]);
 
 // ------------------- ELEMENTOS -------------------
@@ -57,28 +56,29 @@ const winnerNumberInput = document.getElementById("winnerNumberInput");
 const winnerSearchBtn = document.getElementById("winnerSearchBtn");
 const winnerResult = document.getElementById("winnerResult");
 
-let allTickets = [];
+// ------------------- ESTADO -------------------
+const RAFFLE_IDS = Object.keys(RAFFLES);
+const DEFAULT_ID = RAFFLE_IDS[0]; // las compras viejas (sin raffleId) son de esta rifa (Kia)
+let currentRaffleId = DEFAULT_ID;
 let currentFilter = "pendiente";
-let currentRaffleId = Object.keys(RAFFLES)[0]; // rifa que se está viendo
-let unsubscribeTickets = null;
+let tickets = [];       // compras cargadas en pantalla
+let lastDoc = null;     // para pedir la página siguiente
+let hasMore = false;
+let loading = false;
+let viewToken = 0;      // evita mezclar resultados al cambiar de rifa o pestaña
+let unsubStats = null;
 
-// Compras de la rifa elegida. Las compras viejas, que no tienen
-// raffleId, cuentan como Kia (ver raffleOf en raffles-config.js).
-const ticketsOfCurrentRaffle = () =>
-  allTickets.filter((t) => raffleOf(t).id === currentRaffleId);
+const visibleTickets = () => tickets.filter((t) => raffleOf(t).id === currentRaffleId);
 
 // =====================================================================
-// SELECTOR DE RIFA
-// Se crea desde aquí, así que no hace falta tocar admin.html.
-// Va justo encima de las pestañas.
+// SELECTOR DE RIFA (se crea desde aquí, justo encima de las pestañas)
 // =====================================================================
 (function buildRaffleSelector() {
   const anchor = tabs[0]?.parentElement;
   if (!anchor) return;
 
   const wrap = document.createElement("div");
-  wrap.style.cssText =
-    "display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px;";
+  wrap.style.cssText = "display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:0 0 14px;";
 
   const label = document.createElement("label");
   label.htmlFor = "raffleSelect";
@@ -87,8 +87,7 @@ const ticketsOfCurrentRaffle = () =>
 
   const select = document.createElement("select");
   select.id = "raffleSelect";
-  select.style.cssText =
-    "padding:10px 12px;border-radius:10px;font:inherit;max-width:100%;";
+  select.style.cssText = "padding:10px 12px;border-radius:10px;font:inherit;max-width:100%;";
   Object.values(RAFFLES).forEach((r) => {
     const opt = document.createElement("option");
     opt.value = r.id;
@@ -98,8 +97,9 @@ const ticketsOfCurrentRaffle = () =>
   select.value = currentRaffleId;
   select.addEventListener("change", () => {
     currentRaffleId = select.value;
-    renderStats();
-    renderTickets();
+    watchStats();
+    refreshCounts();
+    loadTickets(true);
     refreshWinnerSearch();
   });
 
@@ -121,7 +121,6 @@ loginForm.addEventListener("submit", async (e) => {
 
   try {
     await signInWithEmailAndPassword(auth, email, password);
-    // onAuthStateChanged se encarga de mostrar el panel
   } catch (err) {
     console.error(err);
     loginError.textContent = "Correo o contraseña incorrectos.";
@@ -141,62 +140,113 @@ onAuthStateChanged(auth, (user) => {
     loginScreen.hidden = true;
     panelScreen.hidden = false;
     userEmailEl.textContent = user.email;
-    listenToTickets();
+    watchStats();
+    refreshCounts();
+    loadTickets(true);
   } else {
     loginScreen.hidden = false;
     panelScreen.hidden = true;
-    if (unsubscribeTickets) { unsubscribeTickets(); unsubscribeTickets = null; }
+    if (unsubStats) { unsubStats(); unsubStats = null; }
+    tickets = [];
   }
 });
 
 // =====================================================================
-// LISTAR COMPRAS EN VIVO
-// Se escuchan TODAS las compras (de todas las rifas) y se filtran por
-// la rifa elegida en el selector.
+// CONTADORES
+// - "Boletos vendidos": se lee de raffle/stats (o stats_iphone), 1 lectura.
+// - Pendientes y Verificados: consultas de conteo (1 lectura por cada 1,000).
 // =====================================================================
-function listenToTickets() {
-  const q = query(collection(db, "tickets"), orderBy("createdAt", "desc"));
-  unsubscribeTickets = onSnapshot(q, (snap) => {
-    allTickets = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
-    renderStats();
-    renderTickets();
-    // Si ya había una búsqueda de ganador activa, la refrescamos con los
-    // datos más recientes (por ejemplo, si el estado cambió a verificado)
-    refreshWinnerSearch();
-  }, (err) => {
-    console.error(err);
-    ticketsList.innerHTML = `<p class="admin-empty">Ocurrió un error cargando las compras.</p>`;
-  });
+function watchStats() {
+  if (unsubStats) unsubStats();
+  unsubStats = onSnapshot(rdoc(RAFFLES[currentRaffleId], "stats"), (s) => {
+    const n = s.exists() ? s.data().verifiedCount || 0 : 0;
+    statTickets.textContent = n.toLocaleString("es-DO");
+  }, console.error);
 }
 
-function renderStats() {
-  const mine = ticketsOfCurrentRaffle();
-  const pending = mine.filter((t) => t.status !== "verificado");
-  const verified = mine.filter((t) => t.status === "verificado");
-  const totalTickets = verified.reduce((sum, t) => sum + (t.quantity || 0), 0);
+async function countTickets(status, raffleId) {
+  const c = [];
+  if (raffleId) c.push(where("raffleId", "==", raffleId));
+  c.push(where("status", "==", status));
+  const snap = await getCountFromServer(query(collection(db, "tickets"), ...c));
+  return snap.data().count;
+}
 
-  statPending.textContent = pending.length;
-  statVerified.textContent = verified.length;
-  statTickets.textContent = totalTickets.toLocaleString("es-DO");
+// Las compras viejas no tienen raffleId y cuentan como Kia:
+// Kia = total - lo que pertenece a las demás rifas.
+async function countForRaffle(status) {
+  if (currentRaffleId !== DEFAULT_ID) return countTickets(status, currentRaffleId);
+  const others = RAFFLE_IDS.filter((id) => id !== DEFAULT_ID);
+  const [total, ...rest] = await Promise.all([
+    countTickets(status),
+    ...others.map((id) => countTickets(status, id))
+  ]);
+  return total - rest.reduce((a, b) => a + b, 0);
+}
+
+async function refreshCounts() {
+  const token = viewToken;
+  try {
+    const [p, v] = await Promise.all([countForRaffle("pendiente"), countForRaffle("verificado")]);
+    if (token !== viewToken) return;
+    statPending.textContent = p;
+    statVerified.textContent = v;
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+// =====================================================================
+// LISTAR COMPRAS POR PÁGINAS
+// =====================================================================
+function ticketsQuery(after) {
+  const c = [];
+  if (currentRaffleId !== DEFAULT_ID) c.push(where("raffleId", "==", currentRaffleId));
+  if (currentFilter === "pendiente") c.push(where("status", "==", "pendiente"));
+  if (currentFilter === "verificado") c.push(where("status", "==", "verificado"));
+  c.push(orderBy("createdAt", "desc"));
+  if (after) c.push(startAfter(after));
+  c.push(limit(PAGE));
+  return query(collection(db, "tickets"), ...c);
+}
+
+async function loadTickets(reset) {
+  if (reset) {
+    viewToken++;
+    tickets = []; lastDoc = null; hasMore = false; loading = false;
+    ticketsList.innerHTML = `<p class="admin-empty">Cargando compras...</p>`;
+  } else if (loading) {
+    return;
+  }
+  const token = viewToken;
+  loading = true;
+  try {
+    const snap = await getDocs(ticketsQuery(lastDoc));
+    if (token !== viewToken) return;
+    snap.docs.forEach((d) => tickets.push({ id: d.id, ...d.data() }));
+    if (snap.docs.length) lastDoc = snap.docs[snap.docs.length - 1];
+    hasMore = snap.docs.length === PAGE;
+    renderTickets();
+  } catch (err) {
+    console.error(err);
+    if (token === viewToken) {
+      ticketsList.innerHTML = `<p class="admin-empty">No se pudieron cargar las compras. Si es la primera vez, abre la consola (Ctrl+Shift+J): si pide un índice, abre el enlace que aparece, presiona «Crear índice» y vuelve a probar en unos minutos.</p>`;
+    }
+  } finally {
+    if (token === viewToken) loading = false;
+  }
 }
 
 function renderTickets() {
-  const mine = ticketsOfCurrentRaffle();
-  // Cualquier pestaña que no sea Pendientes o Verificados muestra todas
-  let filtered = mine;
-  if (currentFilter === "pendiente") {
-    filtered = mine.filter((t) => t.status !== "verificado");
-  } else if (currentFilter === "verificado") {
-    filtered = mine.filter((t) => t.status === "verificado");
-  }
+  const list = visibleTickets();
 
-  if (filtered.length === 0) {
+  if (list.length === 0 && !hasMore) {
     ticketsList.innerHTML = `<p class="admin-empty">No hay compras en esta categoría.</p>`;
     return;
   }
 
   ticketsList.innerHTML = "";
-  filtered.forEach((t) => {
+  list.forEach((t) => {
     const isVerified = t.status === "verificado";
     const card = document.createElement("div");
     card.className = "ticket-card";
@@ -207,7 +257,6 @@ function renderTickets() {
       : "";
     const safeId = escapeHtml(t.id);
 
-    // Todo texto de la base de datos pasa por escapeHtml
     card.innerHTML = `
       <div class="ticket-info">
         <div class="ticket-name">${escapeHtml(t.fullName || "Sin nombre")} · ${escapeHtml(t.phone || "")}</div>
@@ -224,7 +273,6 @@ function renderTickets() {
       </div>
     `;
 
-    // La imagen se crea con el DOM (no con HTML en texto), y solo si es data:image/
     const proofSrc = safeProofSrc(t.proofImage);
     const img = document.createElement("img");
     img.className = "ticket-thumb";
@@ -241,32 +289,25 @@ function renderTickets() {
   ticketsList.querySelectorAll("[data-action]").forEach((btn) => {
     btn.addEventListener("click", () => {
       const action = btn.dataset.action;
-      if (action === "reject") {
-        handleReject(btn.dataset.id);
-      } else {
-        handleStatusChange(btn.dataset.id, action, btn);
-      }
+      if (action === "reject") handleReject(btn.dataset.id);
+      else handleStatusChange(btn.dataset.id, action, btn);
     });
   });
+
+  if (hasMore) {
+    const more = document.createElement("button");
+    more.className = "btn btn-ghost";
+    more.style.cssText = "display:block;margin:16px auto;";
+    more.textContent = "Cargar más";
+    more.addEventListener("click", () => { more.disabled = true; loadTickets(false); });
+    ticketsList.appendChild(more);
+  }
 }
 
 // =====================================================================
 // VERIFICAR / DESHACER
-// El contador público "verifiedCount" (el que alimenta la barra de
-// progreso que ve todo el mundo) SOLO se mueve aquí: sube al verificar
-// una compra, baja si se deshace. Así el progreso reflejado es siempre
-// de ventas reales confirmadas, nunca de simples intentos de compra
-// (que pueden incluir fraudes). El contador "soldCount" en script.js
-// sigue siendo un contador interno aparte, usado solo para repartir
-// números de boleto sin choques.
-//
-// Cada compra actualiza el contador de SU rifa (según su raffleId; las
-// compras viejas sin raffleId cuentan como Kia): Kia -> raffle/stats,
-// iPhone -> raffle/stats_iphone.
-//
-// Se hace dentro de una transacción: el estado del ticket y el contador
-// cambian juntos o no cambian, y si se hace doble clic no se cuenta dos
-// veces (si el ticket ya está en el estado pedido, no se hace nada).
+// El contador público "verifiedCount" solo se mueve aquí, dentro de una
+// transacción, en el documento de stats de la rifa de la compra.
 // =====================================================================
 async function handleStatusChange(ticketId, action, btn) {
   const newStatus = action === "verify" ? "verificado" : "pendiente";
@@ -279,7 +320,7 @@ async function handleStatusChange(ticketId, action, btn) {
       if (!snap.exists()) return;
 
       const data = snap.data();
-      if (data.status === newStatus) return; // ya estaba así
+      if (data.status === newStatus) return;
 
       const qty = Number.isInteger(data.quantity) ? data.quantity : 0;
       const r = raffleOf(data);
@@ -291,6 +332,16 @@ async function handleStatusChange(ticketId, action, btn) {
         { merge: true }
       );
     });
+
+    // Se actualiza la lista en pantalla sin volver a leer Firebase
+    const t = tickets.find((x) => x.id === ticketId);
+    if (t) t.status = newStatus;
+    if (currentFilter === "pendiente" || currentFilter === "verificado") {
+      tickets = tickets.filter((x) => x.id !== ticketId);
+    }
+    renderTickets();
+    refreshCounts();
+    refreshWinnerSearch();
   } catch (err) {
     console.error(err);
     alert("No se pudo actualizar el estado. Intenta de nuevo.");
@@ -299,20 +350,10 @@ async function handleStatusChange(ticketId, action, btn) {
 }
 
 // =====================================================================
-// ELIMINAR COMPRA FRAUDULENTA
-// En UNA sola transacción, y siempre dentro de la rifa de la compra:
-//  1. Libera sus números a la bolsa de esa rifa (releasedNumbers) para
-//     que un comprador real los reciba en su próxima compra (solo
-//     números válidos de 5 dígitos, por si el ticket traía datos raros).
-//  2. Si estaba verificado, lo descuenta del progreso público de esa rifa.
-//  3. Si tenía números bendecidos DE ESA RIFA, los quita de su documento
-//     blessed para que dejen de verse tachados.
-//  4. Borra el ticket.
-// Si algo falla, no se aplica nada (antes los números podían quedar
-// liberados con el ticket todavía existiendo).
+// ELIMINAR COMPRA FRAUDULENTA (una sola transacción, dentro de su rifa)
 // =====================================================================
 async function handleReject(ticketId) {
-  const ticket = allTickets.find((t) => t.id === ticketId);
+  const ticket = tickets.find((t) => t.id === ticketId);
   if (!ticket) return;
 
   const numbersText = (Array.isArray(ticket.ticketNumbers) ? ticket.ticketNumbers : []).join(", ");
@@ -339,31 +380,21 @@ async function handleReject(ticketId) {
       const blessedToFree = numbers.filter((n) => r.blessed.includes(n));
 
       if (numbers.length > 0) {
-        transaction.set(
-          rdoc(r, "released"),
-          { numbers: arrayUnion(...numbers) },
-          { merge: true }
-        );
+        transaction.set(rdoc(r, "released"), { numbers: arrayUnion(...numbers) }, { merge: true });
       }
-
       if (data.status === "verificado" && Number.isInteger(data.quantity)) {
-        transaction.set(
-          rdoc(r, "stats"),
-          { verifiedCount: increment(-data.quantity) },
-          { merge: true }
-        );
+        transaction.set(rdoc(r, "stats"), { verifiedCount: increment(-data.quantity) }, { merge: true });
       }
-
       if (blessedToFree.length > 0) {
-        transaction.set(
-          rdoc(r, "blessed"),
-          { claimed: arrayRemove(...blessedToFree) },
-          { merge: true }
-        );
+        transaction.set(rdoc(r, "blessed"), { claimed: arrayRemove(...blessedToFree) }, { merge: true });
       }
-
       transaction.delete(ticketRef);
     });
+
+    tickets = tickets.filter((t) => t.id !== ticketId);
+    renderTickets();
+    refreshCounts();
+    refreshWinnerSearch();
   } catch (err) {
     console.error(err);
     alert("No se pudo eliminar la compra. Intenta de nuevo.");
@@ -376,7 +407,7 @@ tabs.forEach((tab) => {
     tabs.forEach((t) => t.classList.remove("active"));
     tab.classList.add("active");
     currentFilter = tab.dataset.filter;
-    renderTickets();
+    loadTickets(true);
   });
 });
 
@@ -394,12 +425,8 @@ proofModalCloseBtn.addEventListener("click", closeProofModal);
 
 // =====================================================================
 // BUSCAR GANADOR POR NÚMERO DE BOLETO
-// Los números se guardan como texto de 5 dígitos con ceros a la
-// izquierda (ver formatTicket() en script.js), así que aquí normalizamos
-// lo que el admin escriba (solo dígitos, rellenado a 5) antes de buscar.
-// La búsqueda es SOLO dentro de la rifa elegida: las dos rifas usan
-// números de 00000 a 99999, así que el mismo número puede existir en
-// ambas y pertenecer a compradores distintos.
+// Consulta solo ese número en Firebase y se queda con la compra de la
+// rifa elegida (el mismo número puede existir en las dos rifas).
 // =====================================================================
 function formatWinnerNumber(raw) {
   const digits = (raw || "").replace(/\D/g, "");
@@ -413,7 +440,7 @@ function refreshWinnerSearch() {
   }
 }
 
-function searchWinner() {
+async function searchWinner() {
   const num = formatWinnerNumber(winnerNumberInput.value);
   const raffle = RAFFLES[currentRaffleId];
   winnerResult.hidden = false;
@@ -423,9 +450,17 @@ function searchWinner() {
     return;
   }
 
-  const match = ticketsOfCurrentRaffle().find(
-    (t) => Array.isArray(t.ticketNumbers) && t.ticketNumbers.includes(num)
-  );
+  winnerResult.innerHTML = `<p class="winner-empty">Buscando...</p>`;
+  let match = null;
+  try {
+    const snap = await getDocs(query(collection(db, "tickets"), where("ticketNumbers", "array-contains", num)));
+    match = snap.docs.map((d) => ({ id: d.id, ...d.data() }))
+      .find((t) => raffleOf(t).id === currentRaffleId) || null;
+  } catch (err) {
+    console.error(err);
+    winnerResult.innerHTML = `<p class="winner-empty">No se pudo buscar. Intenta de nuevo.</p>`;
+    return;
+  }
 
   if (!match) {
     winnerResult.innerHTML = `<p class="winner-empty">El número <strong>${num}</strong> no fue vendido a nadie en la rifa «${escapeHtml(raffle.name)}».</p>`;
