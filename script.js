@@ -44,7 +44,12 @@ const ticketChipHtml = (n, r) => r.blessed.includes(n)
 let R = RAFFLES.kia;            // rifa que el cliente está comprando
 let selectedQty = 0, selectedMethod = null, proofFile = null;
 let lastTicketNumbers = [], lastPurchaseInfo = null;
-const claimed = ['00120'];             // raffleId -> Set de bendecidos ya asignados
+
+//numeros que salieron bendecidos de la rifa kia (para que no se puedan volver a asignar) new Set(['00120', '00121', '...' ])
+// Lista negra manual: números que ya salieron. Para tachar uno, agrégalo aquí.
+const manuales = { kia: [], iphone: [] };
+const claimed  = { kia: new Set(manuales.kia), iphone: new Set(manuales.iphone) };  // raffleId -> Set de bendecidos ya asignados
+
 // Copia texto al portapapeles. Si el navegador no tiene la API moderna
 // (o la página no es segura), usa el método antiguo con un textarea.
 function copyText(text) {
@@ -112,9 +117,11 @@ function renderCards() {
 // Números bendecidos de una rifa: los ya asignados salen tachados
 function renderBlessed(r) {
   const c = claimed[r.id] || new Set();
-  $(`rc-nums-${r.id}`).innerHTML = r.blessed.map((n) => c.has(n)
+  const blessedHtml = r.blessed.map((n) => c.has(n) === true
     ? `<span class="rc-num out" title="Ya fue asignado">${n}<small>Salió</small></span>`
     : `<span class="rc-num">${n}</span>`).join("");
+
+  $(`rc-nums-${r.id}`).innerHTML = blessedHtml;
   const out = r.blessed.filter((n) => c.has(n)).length;
   $(`rc-counts-${r.id}`).textContent = `${r.blessed.length - out} disponibles · ${out} ya salieron`;
 }
@@ -131,7 +138,6 @@ function updateProgress(r, n) {
 function listen(r) {
   onSnapshot(rdoc(r, "blessed"), (s) => {
     claimed[r.id] = new Set(s.exists() ? s.data().claimed || [] : []);
-    renderBlessed(r);
   }, console.error);
   onSnapshot(rdoc(r, "stats"), (s) =>
     updateProgress(r, s.exists() ? s.data().verifiedCount || 0 : 0), console.error);
@@ -362,24 +368,33 @@ $("newPurchaseBtn").addEventListener("click", () => {
 
 // =====================================================================
 // VERIFICAR BOLETO POR TELÉFONO
-// Las compras viejas (sin raffleId) se muestran como Kia.
+// El cliente elige la rifa. Las compras viejas (sin raffleId) cuentan como Kia.
 // =====================================================================
 const verifyResults = $("verifyResults");
+const verifyRaffle = $("verifyRaffle");
+verifyRaffle.innerHTML = Object.values(RAFFLES)
+  .map((r) => `<option value="${r.id}">${r.name}</option>`).join("");
+
 $("verifyForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const phone = normalizePhone($("verifyPhone").value);
+  const chosen = RAFFLES[verifyRaffle.value];
   if (phone.length < 10) return alert("Escribe un número de teléfono válido.");
   verifyResults.hidden = false; verifyResults.innerHTML = "<p>Buscando tus boletos...</p>";
   try {
     const snap = await getDocs(query(collection(db, "tickets"), where("phone", "in", [phone, "1" + phone])));
-    if (snap.empty) { verifyResults.innerHTML = "<p>No encontramos compras con ese número de teléfono.</p>"; return; }
+    const mine = snap.docs.filter((s) => raffleOf(s.data()).id === chosen.id);
+    if (!mine.length) {
+      verifyResults.innerHTML = `<p>No encontramos compras de la rifa "${chosen.name}" con ese número de teléfono. Si compraste en otra rifa, cámbiala arriba.</p>`;
+      return;
+    }
     verifyResults.innerHTML = "";
-    snap.forEach((s) => {
-      const d = s.data(), r = raffleOf(d), ok = d.status === "verificado";
+    mine.forEach((s) => {
+      const d = s.data(), ok = d.status === "verificado";
       const item = document.createElement("div");
       item.className = "verify-item";
-      item.innerHTML = `<div><strong>${d.quantity} boletos</strong> · ${formatMoney(d.total)} · ${r.name}
-        <div class="ticket-numbers">${(d.ticketNumbers || []).map((n) => ticketChipHtml(n, r)).join("")}</div></div>
+      item.innerHTML = `<div><strong>${d.quantity} boletos</strong> · ${formatMoney(d.total)} · ${chosen.name}
+        <div class="ticket-numbers">${(d.ticketNumbers || []).map((n) => ticketChipHtml(n, chosen)).join("")}</div></div>
         <span class="verify-status ${ok ? "status-verificado" : "status-pendiente"}">${ok ? "Verificado" : "Pendiente (hasta 24h)"}</span>`;
       verifyResults.appendChild(item);
     });

@@ -238,20 +238,23 @@
   </div>
 
   <!-- ============ VERIFICAR BOLETO ============ -->
-  <section class="verify-section" id="verificar">
-    <div class="container">
-      <h2 class="section-title">Verifica tus boletos</h2>
-      <p class="section-sub">Escribe el número de teléfono con el que compraste (con o sin +1) para ver tus boletos y su estado.</p>
-      <form id="verifyForm" class="verify-form">
-        <div class="verify-form-field">
-          <input type="tel" id="verifyPhone" placeholder="Ej. 8091234567" required>
-          <p class="field-error" id="verifyPhoneError" hidden>Escribe un número de teléfono válido.</p>
-        </div>
-        <button type="submit" class="btn btn-primary btn-neon">Verificar</button>
-      </form>
-      <div id="verifyResults" class="verify-results" hidden></div>
-    </div>
-  </section>
+<section class="verify-section" id="verificar">
+  <div class="container">
+    <h2 class="section-title">Verifica tus boletos</h2>
+    <p class="section-sub">Elige tu rifa y escribe el número de teléfono con el que compraste (con o sin +1) para ver tus boletos y su estado.</p>
+    <form id="verifyForm" class="verify-form">
+      <div class="verify-form-field">
+        <select id="verifyRaffle" aria-label="Elige la rifa"></select>
+      </div>
+      <div class="verify-form-field">
+        <input type="tel" id="verifyPhone" placeholder="Ej. 8091234567" required>
+        <p class="field-error" id="verifyPhoneError" hidden>Escribe un número de teléfono válido.</p>
+      </div>
+      <button type="submit" class="btn btn-primary btn-neon">Verificar</button>
+    </form>
+    <div id="verifyResults" class="verify-results" hidden></div>
+  </div>
+</section>
 
   <!-- ============ MÉTODOS DE PAGO ============ -->
   <section class="pay-methods-section" id="pago">

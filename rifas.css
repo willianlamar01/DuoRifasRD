@@ -168,3 +168,12 @@
   .hero-inner .hero-copy h1 { order: 3; text-align: center; }
   .hero-inner .hero-sub     { order: 4; text-align: center; }
 }
+#verifyRaffle {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font: inherit;
+  color: #fff;
+  background: #14171d;
+  border: 1px solid rgba(255, 213, 74, 0.4);
+}
