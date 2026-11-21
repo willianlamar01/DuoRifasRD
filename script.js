@@ -44,8 +44,7 @@ const ticketChipHtml = (n, r) => r.blessed.includes(n)
 let R = RAFFLES.kia;            // rifa que el cliente está comprando
 let selectedQty = 0, selectedMethod = null, proofFile = null;
 let lastTicketNumbers = [], lastPurchaseInfo = null;
-const claimed = {};             // raffleId -> Set de bendecidos ya asignados
-
+const claimed = ['00120'];             // raffleId -> Set de bendecidos ya asignados
 // Copia texto al portapapeles. Si el navegador no tiene la API moderna
 // (o la página no es segura), usa el método antiguo con un textarea.
 function copyText(text) {
@@ -440,3 +439,13 @@ setQuantity(0);
   lb.addEventListener("click", (e) => { if (e.target === lb) close(); });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !lb.hidden) close(); });
 })();
+
+
+// Lee en vivo los bendecidos de los Kia que ya salieron
+export function escucharBendecidosKia(db, callback) {
+  return onSnapshot(
+    collection(db, "numerosbendeficosrifaki5"),
+    (snap) => callback(snap.docs.map((d) => d.data().number)),
+    (err) => console.error("No se pudo leer los bendecidos:", err)
+  );
+}
